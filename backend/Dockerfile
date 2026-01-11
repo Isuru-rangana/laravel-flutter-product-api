@@ -4,7 +4,6 @@ FROM php:8.2-fpm
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -34,8 +33,11 @@ COPY . /var/www/html
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www/html
 
-# Complete composer setup
-RUN composer dump-autoload --optimize
+# Set proper permissions and complete composer setup
+RUN chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/storage \
+    && chmod -R 777 /var/www/html/bootstrap/cache \
+    && composer dump-autoload --no-scripts --optimize
 
 # Copy Docker configuration files
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
