@@ -10,22 +10,19 @@ class Category extends Model
 {
     use HasFactory;
 
-  
+    protected $table = 'product_categories';
+
     protected $fillable = [
         'name',
         'active',
     ];
+
     protected $casts = [
         'active' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-   
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'category_id');
     }
-
-   
 }

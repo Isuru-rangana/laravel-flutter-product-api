@@ -12,21 +12,24 @@ class Product extends Model
 
     protected $fillable = [
         'name',
+        'category_id',
         'price',
         'active',
-        'category_id',
-    ];
-    protected $casts = [
-        'price' => 'decimal:2',
-        'active' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+        'price' => 'decimal:2',
+    ];
+
+    
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
-   
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
 }
