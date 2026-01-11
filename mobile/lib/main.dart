@@ -7,7 +7,6 @@ import 'features/products/presentation/pages/product_form_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize dependency injection
   await di.init();
   
   runApp(const MyApp());
