@@ -27,15 +27,22 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
   Future<void> _loadCategories() async {
     try {
+      print('Loading categories...');
       final categories = await _apiService.fetchCategories();
       setState(() {
         _categories = categories;
         _isLoading = false;
       });
+      print('Categories loaded successfully: ${categories.length} items');
     } catch (e) {
+      print('Error loading categories: $e');
       setState(() => _isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading categories')),
+        SnackBar(
+          content: Text('Error loading categories: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
       );
     }
   }
