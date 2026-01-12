@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Laravel API Service
+  laravel-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: laravel-product-api
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./backend/docker/nginx/default.conf:/etc/nginx/sites-available/default
+    ports:
+      - "8000:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=mysql
+      - DB_DATABASE=product_management
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - mysql
+    networks:
+      - product-network
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-product-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: product_management
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./backend/docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - product-network
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  product-network:
+    driver: bridge
